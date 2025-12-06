@@ -19,3 +19,15 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+# Vue、React build output
+dist/
+build/
+node_modules/
+uni_modules/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
