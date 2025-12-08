@@ -55,7 +55,7 @@
           </view>
           <view class="order-detail" @click="goToOrderDetail(order.id)" v-if="order.goods.length > 1">
             共{{ order.goods.length }}件
-            <up-icon  name="arrow-right" size="24rpx"></up-icon>
+            <up-icon name="arrow-right" size="24rpx"></up-icon>
           </view>
         </view>
         <!-- 订单金额 -->
@@ -70,9 +70,14 @@
             <button class="action-btn cancel-btn" @click="cancelOrder(order.id)">
               取消订单
             </button>
-            <button class="action-btn pay-btn" @click="payOrder(order.id)">
-              立即支付
-            </button>
+
+            <up-button text="立即支付" class="action-btn pay-btn"></up-button>
+
+            <view class="btn-border">
+              <button class="action-btn pay-btn" @click="payOrder(order.id)">
+                立即支付
+              </button>
+            </view>
           </template>
 
           <template v-if="order.status === 'pendingShipment'">
@@ -526,6 +531,7 @@ export default {
   position: relative;
 }
 
+
 .tabs {
   position: sticky;
   top: 0;
@@ -781,17 +787,26 @@ export default {
   flex-wrap: wrap;
 }
 
+.btn-border {
+  border: 1px solid #e0e0e0;
+  border-radius: 24rpx;
+}
+
 .action-btn {
-  margin: 0  !important;
-  padding: 14rpx 24rpx !important;
+  margin: 0;
+  padding: 12rpx 24rpx;
+  border: none !important;
   border-radius: 32rpx;
   font-size: 24rpx;
-  border: 1rpx solid #ddd !important;
   line-height: 1;
   background-color: white;
   color: #666;
   min-width: 120rpx;
   font-weight: bold;
+}
+
+.action-btn:after {
+  border: none;
 }
 
 .cancel-btn {
@@ -801,7 +816,6 @@ export default {
 .pay-btn {
   background-color: rgba(255, 77, 79, 0.1);
   color: #ff4d4f;
-  border: none !important;
 }
 
 .track-btn {
@@ -811,7 +825,6 @@ export default {
 .confirm-btn {
   background-color: rgba(16, 142, 233, 0.1);
   color: #108ee9;
-  border: none !important;
 }
 
 .after-sales-btn {

@@ -31,6 +31,14 @@
       }
     },
     {
+      "path": "pages/order/order-detail",
+      "style": {
+        "navigationBarTitleText": "订单详情",
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/cart/cart",
       "style": {
         "navigationBarTitleText": "购物车",
@@ -56,6 +64,8 @@
   },
   "tabBar": {
     "color": "black",
+    "fontSize" : "12px",
+
     "borderStyle": "white",
     "selectedColor": "#d6204b",
     "backgroundColor": "#FFFFFF",
