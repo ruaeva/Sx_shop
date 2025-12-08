@@ -3,21 +3,21 @@
     <view class="header">
       <!-- 顶部状态栏 -->
       <view class="nav-back" @click="goBack">
-        <uni-icons type="left" size="24" color="#fff"></uni-icons>
+        <up-icon name="arrow-left" size="24rpx"></up-icon>
       </view>
 
       <!-- 订单状态弹窗 -->
-      <OrderTrackingPopup 
-        :show="show" 
+      <OrderTrackingPopup
+        :show="show"
         :orderNo="orderInfo.orderNo"
         :trackingData="trackingList"
-        @close="close" 
+        @close="close"
       />
 
       <view class="order-status">
         <view class="status-title" @click="openTrackingPopup">
           {{ order.status }}
-          <uni-icons type="right" size="24" color="#fff" class="status-icon"></uni-icons>
+          <up-icon name="arrow-down" size="24rpx"></up-icon>
         </view>
         <view class="status-time">剩余付款时间 {{ remainingTime }}</view>
       </view>
@@ -444,16 +444,7 @@ onMounted(() => {
 }
 
 .nav-back {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  height: 88rpx;
-  margin-left: 32rpx;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+
 }
 
 .order-status {

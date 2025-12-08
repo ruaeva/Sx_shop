@@ -53,22 +53,26 @@
   "mp-weixin": {
     "appid": "",
     "setting": {
-      "urlCheck": false
+      "urlCheck": false,
+      "minified": true,
+      "postcss": false
     },
     "usingComponents": true,
-    "mergeVirtualHostAttributes" : true
+    "lazyCodeLoading": "requiredComponents",
+    "mergeVirtualHostAttributes": true
   },
   "mp-alipay": {
     "usingComponents": true,
-    "mergeVirtualHostAttributes" : true
+    "lazyCodeLoading": "requiredComponents",
+    "mergeVirtualHostAttributes": true
   },
   "mp-baidu": {
     "usingComponents": true,
-    "mergeVirtualHostAttributes" : true
+    "mergeVirtualHostAttributes": true
   },
   "mp-toutiao": {
     "usingComponents": true,
-    "mergeVirtualHostAttributes" : true
+    "mergeVirtualHostAttributes": true
   },
   "uniStatistics": {
     "enable": false

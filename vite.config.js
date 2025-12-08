@@ -6,7 +6,7 @@ import uni from '@dcloudio/vite-plugin-uni'
 export default defineConfig({
     plugins: [
         uni(),
-        
+
     ],
     css: {
         preprocessorOptions: {
@@ -17,7 +17,7 @@ export default defineConfig({
         },
     },
     server: {
-        port: 8080,
+        // port: 8080,
         fs: {
             // Allow serving files from one level up to the project root
             allow: ['..']
