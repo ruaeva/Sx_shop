@@ -1,5 +1,11 @@
 <template>
   <view class="user-page">
+    <view class="header">
+
+      <CustomNavbar />
+      <UserSection/>
+    </view>
+
     <view class="content">
 
 
@@ -7,8 +13,7 @@
       <CouponSection/>
 
       <!-- 常用服务展示 -->
-      <ServiceSection v-if="showComponents"/>
-
+      <ServiceSection/>
     </view>
 
   </view>
@@ -16,20 +21,17 @@
 
 <script setup lang="ts">
 
-import {defineAsyncComponent, nextTick, onMounted, ref} from 'vue'
-
-
-const CouponSection = defineAsyncComponent(() => import("./components/Coupon.vue"))
-const ServiceSection = defineAsyncComponent(() => import("./components/Service.vue"))
-
-const showComponents = ref(false)
+import {ref,onMounted} from 'vue'
+import {onLoad} from "@dcloudio/uni-app";
+import CustomNavbar from "@/components/CustomNavbar.vue";
+import UserSection from "@/pages/user/components/UserSection.vue";
+import CouponSection from "@/pages/user/components/CouponSection.vue"
+import ServiceSection from "@/pages/user/components/ServiceSection.vue"
 
 onMounted(() => {
-  // 延迟加载非关键组件
-  nextTick(() => {
-    showComponents.value = true
-  })
+
 })
+
 
 
 </script>
@@ -38,7 +40,13 @@ onMounted(() => {
 <style scoped lang="scss">
 .user-page {
   background-color: $uni-bg-color;
-  height: 100vh;
+  height: 10000px;
+
+
 }
 
+.header {
+  padding-top: 144px;
+  background-image: linear-gradient(to bottom, #fd7f9d, #F5F7FC);
+}
 </style>

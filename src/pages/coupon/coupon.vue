@@ -1,22 +1,22 @@
 <template>
   <view class="coupon-page">
     <!-- 标签切换 -->
-<!--    <view class="header">-->
-<!--      <view-->
-<!--          class="tab-item"-->
-<!--          :class="{ active: currentTab === 'discount' }"-->
-<!--          @click="handleChangeTab('discount')"-->
-<!--      >-->
-<!--        <text class="tab-text">抵扣券</text>-->
-<!--      </view>-->
-<!--      <view-->
-<!--          class="tab-item"-->
-<!--          :class="{ active: currentTab === 'coupon' }"-->
-<!--          @click="handleChangeTab('coupon')"-->
-<!--      >-->
-<!--        <text class="tab-text">优惠券</text>-->
-<!--      </view>-->
-<!--    </view>-->
+    <view class="header">
+      <view
+          class="tab-item"
+          :class="{ active: currentTab === 'discount' }"
+          @click="handleChangeTab('discount')"
+      >
+        <text class="tab-text">抵扣券</text>
+      </view>
+      <view
+          class="tab-item"
+          :class="{ active: currentTab === 'coupon' }"
+          @click="handleChangeTab('coupon')"
+      >
+        <text class="tab-text">优惠券</text>
+      </view>
+    </view>
 
     <!-- 占位容器，用于预留顶部导航栏的空间 -->
 <!--    <view class="coupon-list-placeholder"></view>-->
@@ -60,6 +60,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app'; // 引入 onLoad 生命周期
 import CouponList from './components/CouponList.vue';
 
 type TabType = 'discount' | 'coupon';
@@ -97,6 +98,15 @@ const coupons = ref<Coupon[]>([]);
 function handleChangeTab(tab: TabType) {
   currentTab.value = tab;
 }
+
+// 在页面加载时获取参数
+onLoad((options) => {
+  if (options?.tab === 'coupon') {
+    currentTab.value = 'coupon';
+  } else if (options?.tab === 'discount') {
+    currentTab.value = 'discount';
+  }
+});
 
 // 模拟从 API 获取优惠券数据
 async function fetchCoupons() {
@@ -182,7 +192,7 @@ onMounted(() => {
 }
 
 .header {
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   display: flex;

@@ -25,26 +25,31 @@ onMounted(() => {
   fetchCouponCounts()
 })
 
-const goToCoupon = () => {
-  uni.navigateTo({
-    url: '/pages/coupon/coupon'
-  })
+const goToCoupon = (type: string) => {
+  let url = ''
+  if (type === 'discount') {
+    url = '/pages/coupon/coupon?tab=discount'  // 添加 tab 参数
+  } else if (type === 'normal') {
+    url = '/pages/coupon/coupon?tab=coupon'    // 添加 tab 参数
+  }
+
+  uni.navigateTo({ url })
 }
 
 </script>
 
 <template>
   <view class="coupon-section">
-    <view class="coupon-item" @click="goToCoupon">
-      <image class="coupon-bg" src="/static/img/user/honbao.png"></image>
+    <view class="coupon-item" @click="goToCoupon('discount')">
+      <image class="coupon-bg" src="/static/icon/coupon/coupon.png"></image>
       <text class="coupon-label">抵扣券</text>
       <text class="coupon-text">
         <text class="coupon-count">{{ discountCouponCount }}</text>
         张
       </text>
     </view>
-    <view class="coupon-item" @click="goToCoupon">
-      <image class="coupon-bg" src="/static/img/user/honbao.png"></image>
+    <view class="coupon-item" @click="goToCoupon('normal')">
+      <image class="coupon-bg" src="/static/icon/coupon/coupon_blue.png"></image>
       <text class="coupon-label">优惠券</text>
       <text class="coupon-text">
         <text class="coupon-count">{{ couponCount }}</text>
@@ -59,7 +64,7 @@ const goToCoupon = () => {
   display: flex;
   gap: 24rpx;
   border-radius: 32rpx;
-  margin: 24rpx;
+  margin: 20rpx;
 }
 
 .coupon-item {
@@ -80,6 +85,7 @@ const goToCoupon = () => {
   height: 160rpx;
   object-fit: contain;
   margin-bottom: 16rpx;
+  opacity: 0.1;
   right: -30rpx;
   transform: rotate(30deg);
 }

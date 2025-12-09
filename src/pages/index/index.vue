@@ -1,45 +1,39 @@
 <template>
   <view class="index-page">
+    <view class="header">
+      <Navbar/>
+      <NewUser/>
+      <CategoryPanel/>
+    </view>
+
+    <view class="content">
+
+
+      <GoodsList/>
+    </view>
 
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      title: 'Hello',
-    }
-  },
-  onLoad() {},
-  methods: {},
-}
+<script lang="ts" setup>
+import Navbar from "@/pages/index/components/navbar.vue";
+import GoodsList from "@/pages/index/components/GoodsList.vue";
+import NewUser from "@/pages/index/components/NewUser.vue";
+import CategoryPanel from "@/pages/index/components/CatetoryPanel.vue";
 </script>
 
-<style>
+<style lang="scss" scoped>
+.index-page {
+  background-color: $uni-bg-color;
+}
+
+.header {
+  background-image: linear-gradient(to top, rgba(255, 255, 255, 0), rgba(252, 80, 100, 0.2));
+}
+
+
 .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+  padding: 0 20rpx 44rpx;
 
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
 }
 </style>

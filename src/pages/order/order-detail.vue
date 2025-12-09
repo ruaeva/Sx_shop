@@ -438,6 +438,7 @@ onMounted(() => {
 }
 
 .header {
+
   background: linear-gradient(60deg, #f30909, #f5813d);
   padding: 88rpx 0 120rpx;
   position: relative;

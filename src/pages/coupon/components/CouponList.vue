@@ -17,23 +17,20 @@
         <text class="desc">{{ item.description }}</text>
       </view>
       <view class="action-section">
-        <up-button
-            size="small"
+        <button
             v-if="item.status === 'available'"
-            class="use-btn"
+            class="action-btn use-btn"
             @click="$emit('use-coupon', item.id)"
         >
           使用
-        </up-button>
-        <up-button
+        </button>
+        <button
             v-else
-            size="small"
-            class="status-btn"
+            class="action-btn status-btn"
             :class="item.status"
-            disabled
         >
           {{ getStatusText(item.status) }}
-        </up-button>
+        </button>
       </view>
     </view>
   </view>
@@ -95,7 +92,7 @@ function getStatusText(status: CouponStatus): string {
 
 .coupon-item.expired {
   opacity: 0.6;
-  background : #fff;
+  background: #fff;
   border-color: #999;
 }
 
@@ -153,26 +150,34 @@ function getStatusText(status: CouponStatus): string {
   justify-content: center;
 }
 
-.use-btn {
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 24rpx;
+  min-height: 48rpx;
+  padding: 14rpx 16rpx;
+  border-radius: 24rpx;
+  min-width: 100rpx; /* 设置固定宽度 */
+}
 
+.action-btn:after {
+  border: none;
+}
+
+.use-btn {
   background-color: #ff4d4f;
   color: white;
-  border: none;
-
-  border-radius: 20rpx;
 }
 
 .status-btn {
-
   background-color: #f5f5f5;
   color: #999;
   border: none;
-  border-radius: 20rpx;
-
 }
 
 .status-btn.used {
-
   border: 1px solid #ff4d4f;
   background-color: transparent;
   color: #ff4d4f;
