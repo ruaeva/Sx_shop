@@ -23,7 +23,7 @@
 
 import {ref,onMounted} from 'vue'
 import {onLoad} from "@dcloudio/uni-app";
-import CustomNavbar from "@/components/CustomNavbar.vue";
+
 import UserSection from "@/pages/user/components/UserSection.vue";
 import CouponSection from "@/pages/user/components/CouponSection.vue"
 import ServiceSection from "@/pages/user/components/ServiceSection.vue"

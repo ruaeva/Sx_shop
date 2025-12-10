@@ -2,8 +2,11 @@
 import {ref} from 'vue';
 
 const height = ref(84);
-
 const value = ref(99999);
+const max = ref(99);
+const type = ref('error');
+
+
 </script>
 
 <template>
@@ -21,7 +24,7 @@ const value = ref(99999);
 
       </view>
       <view class="message">
-        <up-badge numberType="overflow" :type="error" max="99" :value="value" :shape="circle" class="badge"></up-badge>
+        <up-badge :type="type" :max="max" :value="value"></up-badge>
         <image class="btn-icon" src="/static/icon/message/message.png"></image>
         <text class="btn-text">消息</text>
       </view>
@@ -96,5 +99,4 @@ const value = ref(99999);
   color: white;
   border-radius: 24px;
 }
-
 </style>

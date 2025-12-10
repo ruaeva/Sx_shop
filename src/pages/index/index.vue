@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import Navbar from "@/pages/index/components/navbar.vue";
+import Navbar from "@/pages/index/components/Navbar.vue";
 import GoodsList from "@/pages/index/components/GoodsList.vue";
 import NewUser from "@/pages/index/components/NewUser.vue";
 import CategoryPanel from "@/pages/index/components/CatetoryPanel.vue";
