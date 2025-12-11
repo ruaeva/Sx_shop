@@ -3,6 +3,13 @@ import {computed, onMounted, ref} from 'vue';
 import {onLoad} from "@dcloudio/uni-app";
 import {guid} from 'uview-plus';
 
+// 使用 defineOptions 定义组件选项
+defineOptions({
+  // 解除子组件样式隔离
+  options: {
+    styleIsolation: 'shared'
+  }
+})
 
 const loading = ref(true);
 const isUnmounted = ref(false);
@@ -31,6 +38,12 @@ const goodsList = ref([]);
 const page = ref(1);
 const pageSize = ref(10);
 const hasMore = ref(true);
+
+const isItemActive = ref(false);
+
+const setItemActive = (active) => {
+  isItemActive.value = active;
+};
 
 // 分类映射
 const categoryMap = {
@@ -178,18 +191,11 @@ const loadGoodsList = async (isRefresh = false) => {
   }
 };
 
-const onImageLoad = (event) => {
-  console.log('图片加载成功:', event);
-  // 可以在这里处理图片加载成功的逻辑
-  // 比如隐藏加载指示器、记录统计信息等
-};
 
-// 图片加载失败回调
-const onImageError = (event) => {
-  console.error('图片加载失败:', event);
-  // 可以在这里处理图片加载失败的逻辑
-  // 比如显示默认图片、记录错误日志等
-};
+// 添加购物车
+const addCart = (id) => {
+
+}
 
 // 删除商品
 const remove = (id) => {
@@ -248,13 +254,28 @@ const goToDetail = (item) => {
       <view class="goods-service">
         <view class="goods-sales" @click="goToDetail({ type: 'promotion' })">
           <text class="title">促销专区</text>
+          <text class="tips">买到就是赚到 ！！！</text>
+          <view class="sales-list">
+            <view class="sales-item">
+              <image class="service-image" src="/static/icon/user/User.png"></image>
+              <text class="sales-price">{{ price }}/斤</text>
+            </view>
+            <view class="sales-item">
+              <image class="service-image" src="/static/icon/user/User.png"></image>
+              <text class="sales-price">{{ price }}/斤</text>
+            </view>
+          </view>
         </view>
         <view class="goods-service-1">
           <view class="goods-new" @click="goToDetail({ type: 'new' })">
             <text class="title">新品发现</text>
+            <text class="tips">好货抢先买</text>
+            <image class="service-image" src="@/static/img/goods/1.png"></image>
           </view>
           <view class="goods-hot" @click="goToDetail({ type: 'ranking' })">
             <text class="title">排行榜</text>
+            <text class="tips">大家都在买</text>
+            <image class="service-image" src="@/static/img/goods/2.png"></image>
           </view>
         </view>
       </view>
@@ -267,10 +288,15 @@ const goToDetail = (item) => {
           @scrolltolower="onReachBottom"
       >
         <template v-slot:column="{ colList, colIndex }">
+
           <view
               class="goods-item"
+              :class="{ 'goods-item-active': isItemActive }"
               v-for="(item, index) in colList"
               :key="item.id"
+              @touchstart="setItemActive(true)"
+              @touchend="setItemActive(false)"
+              @touchcancel="setItemActive(false)"
               @click="goToDetail(item)"
           >
             <!-- 商品图片 -->
@@ -285,18 +311,15 @@ const goToDetail = (item) => {
             ></up-skeleton>
 
             <!-- 实际图片内容 -->
-
-            <up-image
-                :loadingIcon="false"
+            <image
                 mode="aspectFill"
+                lazyLoad="true"
                 v-if="!loading"
-                :fade="true"
-                :duration="500"
                 :src="item.image"
                 :index="index"
                 class="goods-image"
                 @load="onImageLoad"
-            ></up-image>
+            ></image>
 
 
             <!--            <up-lazy-load-->
@@ -316,9 +339,7 @@ const goToDetail = (item) => {
               <up-skeleton
                   rows="3"
                   title
-                  :titleHeight="titleHeight"
                   :loading="loading"
-
               >
                 <!-- 商品名称 -->
 
@@ -328,9 +349,14 @@ const goToDetail = (item) => {
                 <view class="goods-desc">{{ item.desc }}</view>
 
                 <!-- 价格和销量 -->
-                <view class="goods-info">
-                  <view class="goods-price">¥{{ item.price }}</view>
-                  <view class="goods-sales-count">已售{{ item.sales }}</view>
+                <view class="goods-footer">
+                  <view class="goods-footer-info">
+                    <view class="goods-price">¥{{ item.price }}</view>
+                    <view class="goods-sales-count">已售{{ item.sales }}</view>
+                  </view>
+                  <view class="btn-add_cart" @click.stop="addCart">
+                    <up-icon name="plus" color="#ff4d4f" size="12"></up-icon>
+                  </view>
                 </view>
 
                 <!-- 标签 -->
@@ -372,6 +398,21 @@ const goToDetail = (item) => {
 
 <style scoped lang="scss">
 
+// 调整瀑布流组件商品列之间的间距
+:deep(.u-column) {
+
+  &:not(:first-child) {
+    margin-left: 16rpx;
+  }
+}
+
+
+.u-scroll-list {
+  padding: 0;
+  margin: 0;
+
+}
+
 .page-container {
   width: 100%;
   min-height: 100vh;
@@ -384,63 +425,112 @@ const goToDetail = (item) => {
   z-index: 10;
   background-color: transparent;
 
-  .scroll-list {
-
+  .tab-item:last-child {
+    margin-right: 16rpx;
   }
 
   .tab-item {
     display: inline-block;
-    padding: 12rpx 28rpx;
-
+    padding: 16rpx 32rpx;
     font-size: 28rpx;
     color: #333;
-    background: #fff;
+    background: rgb(255, 255, 255);
     border-radius: 16rpx;
     white-space: nowrap;
     transition: all 0.3s;
-    margin: 12rpx 24rpx 12rpx 0;
+    margin: 0 0 16rpx 16rpx;
 
     &.active {
       //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #f30909;
-      font-weight: 600;
+      font-weight: bold;
       box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
     }
   }
 }
 
 .tab-content {
-
-
+  margin: 0 20rpx;
 }
 
 .goods-service {
   display: flex;
   flex-direction: row;
   margin-bottom: 16rpx;
-  gap: 12rpx;
+  gap: 16rpx;
 
   .goods-sales,
   .goods-new,
   .goods-hot {
-    display: flex;
     flex: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 320rpx;
     border-radius: 24rpx;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
     .title {
+      font-family: 'YouSheBiaoTiHei';
       font-size: 32rpx;
-      font-weight: 600;
-      color: #fff;
+      font-weight: bold;
+      color: #333;
+      margin: 32rpx 0 8rpx;
     }
+
+    .tips {
+      font-size: 20rpx;
+      color: #666;
+      margin-bottom: 12rpx;
+    }
+
+    .service-image {
+      width: 144rpx;
+      height: 144rpx;
+      object-fit: cover;
+    }
+  }
+
+  .goods-sales {
+    align-items: start;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+
+    .title {
+      margin-left: 32rpx;
+    }
+
+    .tips {
+      margin-left: 16rpx;
+    }
+
+    .sales-list {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      align-items: center;
+      margin-left: 16rpx;
+      gap: 20rpx;
+    }
+
+    .sales-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sales-price {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: rgb(246, 60, 60);
+    }
+
   }
 
   .goods-service-1 {
     display: flex;
-    gap: 12rpx;
+    gap: 16rpx;
     flex: 1;
 
     .goods-new,
@@ -450,21 +540,25 @@ const goToDetail = (item) => {
     }
 
     .goods-new {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      //background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background-color: $card-base-bg;
     }
 
     .goods-hot {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      //background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      background-color: $card-base-bg;
+
     }
   }
 }
 
+
 .goods-item {
   position: relative;
-  background-color: #fff;
-  border-radius: 16rpx;
+  background-color: rgb(255, 255, 255);
+  border-radius: 32rpx;
   overflow: hidden;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
   //box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
   transition: transform 0.3s;
 
@@ -476,11 +570,11 @@ const goToDetail = (item) => {
     width: 100%;
     height: 380rpx;
     object-fit: cover;
+    border-radius: 24rpx;
   }
 
   .goods-info {
     padding: 16rpx;
-
   }
 
   .goods-name {
@@ -493,29 +587,48 @@ const goToDetail = (item) => {
   }
 
   .goods-desc {
-
     font-size: 24rpx;
     color: #999;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-bottom: 16rpx;
   }
 
   .goods-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16rpx 8rpx;
+    margin-bottom: 8rpx;
 
-    .goods-price {
-      font-size: 32rpx;
-      font-weight: 700;
-      color: #ff4d4f;
+    .goods-footer-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .goods-price {
+        font-size: 32rpx;
+        font-weight: 700;
+        color: #ff4d4f;
+        margin-right: 12rpx;
+      }
+
+      .goods-sales-count {
+        font-size: 22rpx;
+        color: #999;
+      }
     }
 
-    .goods-sales-count {
-      font-size: 22rpx;
-      color: #999;
+    //.goods-item-active {
+    //  transform: scale(0.98);
+    //}
+
+
+    .btn-add_cart {
+      background-color: rgba(255, 77, 79, 0.3);
+      padding: 8rpx;
+      border-radius: 50%;
+
     }
   }
 
@@ -525,14 +638,13 @@ const goToDetail = (item) => {
     left: 16rpx;
     padding: 6rpx 16rpx;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
+    color: rgb(255, 255, 255);
     font-size: 22rpx;
     border-radius: 24rpx;
     z-index: 2;
   }
 
   .goods-shop {
-    padding: 8rpx 16rpx 16rpx;
     font-size: 22rpx;
     color: #999;
   }

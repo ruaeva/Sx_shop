@@ -8,10 +8,10 @@
 
       <!-- 订单状态弹窗 -->
       <OrderTrackingPopup
-        :show="show"
-        :orderNo="orderInfo.orderNo"
-        :trackingData="trackingList"
-        @close="close"
+          :show="show"
+          :orderNo="orderInfo.orderNo"
+          :trackingData="trackingList"
+          @close="close"
       />
 
       <view class="order-status">
@@ -141,7 +141,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import OrderTrackingPopup from "@/pages/order/components/OrderTrackingPopup.vue";
 
 // 定义类型
@@ -774,98 +774,6 @@ onMounted(() => {
   font-size: 28rpx;
   color: #fff;
   font-weight: bold;
-}
-
-/* 弹窗样式优化 */
-.popup-content {
-  max-height: 60vh;
-  padding: 32rpx;
-}
-
-.popup-header {
-  padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-  margin-bottom: 20rpx;
-}
-
-.title {
-  font-size: 36rpx;
-  font-weight: bold;
-  text-align: center;
-}
-
-.tracking-content {
-  padding: 20rpx 0;
-}
-
-.tracking-item {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin: 32rpx 0;
-  padding-left: 32rpx;
-}
-
-.tracking-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 36rpx;
-  left: 5rpx;
-  bottom: -40rpx;
-  background-color: #e5e5e5;
-  width: 6rpx;
-  border-radius: 4rpx;
-}
-
-.status-dot {
-  position: absolute;
-  top: 14rpx;
-  left: 0;
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
-  background-color: #e5e5e5;
-  transition: all 0.3s ease;
-}
-
-.status-dot.active {
-  background-color: #f30909;
-  transform: scale(1.2);
-}
-
-.status-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 8rpx;
-  margin-left: 8rpx;
-}
-
-.status-text {
-  font-size: 28rpx;
-  color: #999;
-}
-
-.status-text.active {
-  color: black;
-}
-
-.time {
-  font-size: 24rpx;
-  color: #999;
-}
-
-.empty-tip {
-  text-align: center;
-  color: #999;
-  font-size: 28rpx;
-  margin-top: 60rpx;
-}
-
-.order-id {
-  font-size: 28rpx;
-  color: #666;
 }
 </style>
 

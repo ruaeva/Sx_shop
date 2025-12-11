@@ -52,7 +52,7 @@ const goToMessage = () => {
   position: relative;
   padding: 32rpx;
   margin: 20rpx;
-  background-color: #fff;
+  background-color: $card-base-bg;
   border-radius: 24rpx;
 
 }
@@ -65,7 +65,7 @@ const goToMessage = () => {
   padding: 4rpx 24rpx;
   top: -68rpx;
   right: 24rpx;
-  background-color: #fff;
+  background-color: $card-base-bg;
   border-radius: 32rpx;
 }
 
@@ -122,7 +122,7 @@ const goToMessage = () => {
 
 .default-tag {
   font-size: 24rpx;
-  color: #ffffff;
+  color: $card-base-bg;
   background-color: #f12150;
   padding: 4rpx 16rpx;
   border-radius: 24rpx;

@@ -74,7 +74,7 @@ const goToCoupon = (type: string) => {
   flex-direction: column;
   flex: 1;
   padding: 32rpx;
-  background-color: #ffffff;
+  background-color: $card-base-bg;
   border-radius: 32rpx;
 
 }

@@ -8,7 +8,6 @@
 
     <view class="content">
 
-
       <!-- 优惠展示 -->
       <CouponSection/>
 

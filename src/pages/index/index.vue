@@ -1,7 +1,8 @@
 <template>
   <view class="index-page">
     <view class="header">
-      <Navbar/>
+
+      <CustomNavbar/>
       <NewUser/>
       <CategoryPanel/>
     </view>
@@ -15,14 +16,23 @@
   </view>
 </template>
 
-<script lang="ts" setup>
-import Navbar from "@/pages/index/components/Navbar.vue";
+<script setup>
+import CustomNavbar from "@/pages/index/components/CustomNavbar.vue"
 import GoodsList from "@/pages/index/components/GoodsList.vue";
 import NewUser from "@/pages/index/components/NewUser.vue";
 import CategoryPanel from "@/pages/index/components/CatetoryPanel.vue";
 </script>
 
 <style lang="scss" scoped>
+.nav {
+  position: fixed;
+  top: 0;
+  height: 44px;
+  width: 100%;
+  background-color: #e5e5e5;
+  z-index: 99;
+}
+
 .index-page {
   background-color: $uni-bg-color;
 }
@@ -33,7 +43,7 @@ import CategoryPanel from "@/pages/index/components/CatetoryPanel.vue";
 
 
 .content {
-  padding: 0 20rpx 44rpx;
+  //padding: 0 0 44rpx;
 
 }
 </style>

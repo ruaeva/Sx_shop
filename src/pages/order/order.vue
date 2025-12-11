@@ -750,6 +750,7 @@ export default {
   flex: 1;
 }
 
+
 .goods-price {
   font-size: 28rpx;
   color: #ff4d4f;

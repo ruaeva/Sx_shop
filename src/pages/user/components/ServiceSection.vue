@@ -106,7 +106,7 @@ const onImageError = (index) => {
 
 <style scoped lang="scss">
 .service-section {
-  background-color: #fff;
+  background-color: $card-base-bg;
   padding: 20rpx;
   margin: 20rpx;
   border-radius: 24rpx;

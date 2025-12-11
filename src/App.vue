@@ -9,8 +9,20 @@ onShow(() => {
 onHide(() => {
   console.log("App Hide");
 });
+
 </script>
 <style lang="scss">
+
 /* 注意要写在第一行，同时给style标签加入lang="scss"属性 */
 @import "uview-plus/index.scss";
+
+
+
+page {
+
+ @media (min-width : 720px) {
+   padding:0 24rem;
+ }
+
+}
 </style>
