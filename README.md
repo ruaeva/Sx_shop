@@ -66,13 +66,13 @@ yarn install
 ## 开发运行
 
 ```bash
-npm run dev
+uni
 ```
 
 ## 构建
 
 ```bash
-npm run build
+uni build
 ```
 
 ## 项目功能
