@@ -41,12 +41,15 @@ src/
 
 - Vue 3
 - TypeScript
-- uni-app
+- Uni-app
+- Nodejs 20.19
 - Vite
 - Pinia
 - uView-Plus 组件库
 
 ## 安装依赖
+
+node >= 20.0.0 好像18以下组件库依赖无法引入
 
 ```bash
 npm install
