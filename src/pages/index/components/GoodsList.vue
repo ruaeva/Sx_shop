@@ -1,30 +1,19 @@
 <script setup>
 import {computed, onMounted, ref} from 'vue';
-import {onLoad} from "@dcloudio/uni-app";
+import {onLoad, onReachBottom} from "@dcloudio/uni-app";
 import {guid} from 'uview-plus';
 
 // 使用 defineOptions 定义组件选项
 defineOptions({
-  // 解除子组件样式隔离
   options: {
     styleIsolation: 'shared'
   }
 })
 
-const loading = ref(true);
 const isUnmounted = ref(false);
 
 onLoad(() => {
-  uni.$u.sleep(3000).then(() => {
-    if (!isUnmounted.value) {
-      loading.value = false;
-    }
-  }).catch((error) => {
-    console.error('Loading error:', error);
-    if (!isUnmounted.value) {
-      loading.value = false;
-    }
-  });
+  // 初始化时不需要全局loading
 });
 
 const tagsActiveIndex = ref(0);
@@ -36,51 +25,36 @@ const uWaterfallRef = ref(null);
 const loadStatus = ref('loadmore');
 const goodsList = ref([]);
 const page = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(8);
 const hasMore = ref(true);
 
-const isItemActive = ref(false);
-
-const setItemActive = (active) => {
-  isItemActive.value = active;
-};
+// 图片加载状态Map
+const imageLoadingMap = ref(new Map());
+// 卡片激活状态Map
+const itemActiveMap = ref(new Map());
 
 // 分类映射
 const categoryMap = {
-  0: 'featured',    // 精选
-  1: 'new',         // 新品
-  2: 'hot',         // 热销
-  3: 'favorite',    // 收藏
-  4: 'seasoning',   // 调料干货
-  5: 'bakery',      // 烘焙熟食
-  6: 'fresh',       // 水果生鲜
-  7: 'drinks',      // 酒水饮料
-  8: 'grain'        // 米面粮油
+  0: 'featured', 1: 'new', 2: 'hot', 3: 'favorite', 4: 'seasoning',
+  5: 'bakery', 6: 'fresh', 7: 'drinks', 8: 'grain'
 };
 
-// 当前分类
 const currentCategory = computed(() => categoryMap[tagsActiveIndex.value]);
 
-// 模拟API：获取商品列表
+// 模拟API
 const fetchGoodsList = async (category, pageNum, size) => {
   try {
-    // 模拟网络延迟
     await new Promise(resolve => setTimeout(resolve, 800));
+    console.log(`正在加载分类：${category}，页码：${pageNum}，数量：${size}`);
 
-    // 实际开发中替换为真实API调用
-    // const response = await fetch(`/api/goods?category=${category}&page=${pageNum}&pageSize=${size}`);
-    // return await response.json();
-
-    // 模拟返回数据
     const mockData = {
       code: 200,
       data: {
         list: generateMockGoods(category, size),
         total: 100,
-        hasMore: pageNum < 10 // 模拟只有10页数据
+        hasMore: pageNum < 10
       }
     };
-
     return mockData;
   } catch (error) {
     console.error('获取商品数据失败:', error);
@@ -88,7 +62,7 @@ const fetchGoodsList = async (category, pageNum, size) => {
   }
 };
 
-// 生成模拟商品数据
+// 生成模拟数据
 const generateMockGoods = (category, count) => {
   const goods = [];
   const categories = {
@@ -106,34 +80,52 @@ const generateMockGoods = (category, count) => {
   const categoryInfo = categories[category] || categories.featured;
   const shops = ['优选商城', '品质生活馆', '新鲜直达店', '进口食品店', '本地特产店'];
 
-  const tagsLength = categoryInfo.tags.length;
-  const shopsLength = shops.length;
-
-// 预先生成所需的随机数数组
-  const randomArray = Array.from({length: count * 4}, () => Math.random());
-
   for (let i = 0; i < count; i++) {
-    const randomIndex = i * 4;
-    const randomHeight = 250 + Math.floor(randomArray[randomIndex] * 100);
-
-    // 安全获取tag和shop，避免空数组越界
-    const tagIndex = tagsLength > 0 ? Math.floor(randomArray[randomIndex + 1] * tagsLength) : 0;
-    const shopIndex = shopsLength > 0 ? Math.floor(randomArray[randomIndex + 2] * shopsLength) : 0;
+    const randomHeight = 250 + Math.floor(Math.random() * 100);
+    const itemId = guid();
 
     goods.push({
-      id: guid(),
+      id: itemId,
       name: `${categoryInfo.name}${page.value * count + i + 1}`,
       desc: `精选优质商品，品质保证，新鲜直达`,
-      price: (randomArray[randomIndex + 3] * 100 + 10).toFixed(1),
-      image: `https://picsum.photos/200/${randomHeight}?random=${Date.now() + i}_${i}`,
-      tag: tagsLength > 0 ? categoryInfo.tags[tagIndex] : '',
-      shop: shopsLength > 0 ? shops[shopIndex] : '',
-      sales: Math.floor(randomArray[randomIndex] * 10000),
-      stock: Math.floor(randomArray[randomIndex + 1] * 1000) + 100
+      price: (Math.random() * 100 + 10).toFixed(1),
+      image: `https://picsum.photos/200/${randomHeight}?random=${Date.now()}_${i}`,
+      tag: categoryInfo.tags[Math.floor(Math.random() * categoryInfo.tags.length)],
+      shop: shops[Math.floor(Math.random() * shops.length)],
+      sales: Math.floor(Math.random() * 10000),
+      stock: Math.floor(Math.random() * 1000) + 100
     });
-  }
 
+    // 初始化图片加载状态
+    imageLoadingMap.value.set(itemId, true);
+  }
   return goods;
+};
+
+// 图片加载完成
+const onImageLoad = (itemId) => {
+  imageLoadingMap.value.set(itemId, false);
+};
+
+// 图片加载失败
+const onImageError = (itemId) => {
+  imageLoadingMap.value.set(itemId, false);
+  console.error(`图片加载失败: ${itemId}`);
+};
+
+// 检查图片是否正在加载
+const isImageLoading = (itemId) => {
+  return imageLoadingMap.value.get(itemId) ?? true;
+};
+
+// 设置卡片激活状态
+const setItemActive = (itemId, active) => {
+  itemActiveMap.value.set(itemId, active);
+};
+
+// 检查卡片是否激活
+const isItemActive = (itemId) => {
+  return itemActiveMap.value.get(itemId) ?? false;
 };
 
 // 初始化加载
@@ -141,16 +133,32 @@ onMounted(async () => {
   await loadGoodsList(true);
 });
 
+// 使用 onReachBottom 替代 @scrolltolower
+onReachBottom(() => {
+  console.log('页面触底事件触发');
+  if (hasMore.value && loadStatus.value !== 'loading') {
+    loadGoodsList(false);
+  }
+});
+
 // 加载商品列表
 const loadGoodsList = async (isRefresh = false) => {
-  if (loadStatus.value === 'loading') return;
+  // 防止重复加载
+  if (loadStatus.value === 'loading') {
+    console.log('正在加载中，阻止重复请求');
+    return;
+  }
 
+  // 刷新
   if (isRefresh) {
     page.value = 1;
     goodsList.value = [];
+    imageLoadingMap.value.clear();
+    itemActiveMap.value.clear();
     hasMore.value = true;
   }
 
+  // 无更多数据
   if (!hasMore.value) {
     loadStatus.value = 'nomore';
     return;
@@ -180,52 +188,32 @@ const loadGoodsList = async (isRefresh = false) => {
       }
     } else {
       loadStatus.value = 'loadmore';
-      // 可以添加错误提示
       console.error('加载失败');
     }
   } catch (error) {
     loadStatus.value = 'loadmore';
     console.error('加载商品列表失败:', error);
-
-    // 可以添加错误提示
   }
 };
 
-
-// 添加购物车
 const addCart = (id) => {
+  console.log('添加到购物车:', id);
+};
 
-}
-
-// 删除商品
 const remove = (id) => {
   uWaterfallRef.value?.remove(id);
-  // 实际开发中可能需要调用删除收藏的API
-  // await deleteFromFavorite(id);
+  imageLoadingMap.value.delete(id);
+  itemActiveMap.value.delete(id);
 };
 
-// 触底加载更多
-const onReachBottom = () => {
-  loadGoodsList(false);
-};
-
-// 切换标签
 const handleTabChange = async (index) => {
   if (tagsActiveIndex.value === index) return;
-
   tagsActiveIndex.value = index;
-
-  // 切换分类时重新加载数据
   await loadGoodsList(true);
 };
 
-// 点击商品跳转详情
 const goToDetail = (item) => {
-  // 实际开发中跳转到商品详情页
   console.log('跳转到商品详情:', item);
-  // uni.navigateTo({
-  //   url: `/pages/goods/detail?id=${item.id}`
-  // });
 };
 </script>
 
@@ -234,7 +222,6 @@ const goToDetail = (item) => {
     <!-- 顶部标签栏 -->
     <view class="tab-list">
       <up-scroll-list :indicator="false" class="scroll-list">
-
         <view
             v-for="(item, index) in TabList"
             :key="index"
@@ -247,7 +234,6 @@ const goToDetail = (item) => {
       </up-scroll-list>
     </view>
 
-
     <!-- 内容区域 -->
     <view class="tab-content">
       <!-- 服务入口 -->
@@ -258,11 +244,9 @@ const goToDetail = (item) => {
           <view class="sales-list">
             <view class="sales-item">
               <image class="service-image" src="/static/icon/user/User.png"></image>
-              <text class="sales-price">{{ price }}/斤</text>
             </view>
             <view class="sales-item">
               <image class="service-image" src="/static/icon/user/User.png"></image>
-              <text class="sales-price">{{ price }}/斤</text>
             </view>
           </view>
         </view>
@@ -280,106 +264,85 @@ const goToDetail = (item) => {
         </view>
       </view>
 
-      <!-- 瀑布流商品列表-->
+      <!-- 瀑布流商品列表 -->
       <up-waterfall
           ref="uWaterfallRef"
           v-model="goodsList"
           columns="2"
-          @scrolltolower="onReachBottom"
       >
         <template v-slot:column="{ colList, colIndex }">
-
           <view
               class="goods-item"
-              :class="{ 'goods-item-active': isItemActive }"
+              :class="{ 'goods-item-active': isItemActive(item.id) }"
               v-for="(item, index) in colList"
               :key="item.id"
-              @touchstart="setItemActive(true)"
-              @touchend="setItemActive(false)"
-              @touchcancel="setItemActive(false)"
+              @touchstart="setItemActive(item.id, true)"
+              @touchend="setItemActive(item.id, false)"
+              @touchcancel="setItemActive(item.id, false)"
               @click="goToDetail(item)"
           >
-            <!-- 商品图片 -->
-            <!-- 骨架屏（加载状态） -->
-            <up-skeleton
-                v-if="loading"
-                rows="1"
-                :rowsWidth="['100%']"
-                :rowsHeight="['380rpx']"
-                :title="false"
-                :loading="true"
-            ></up-skeleton>
+            <!-- 图片容器 -->
+            <view class="goods-image-wrapper">
+              <!-- 骨架屏 - 每张图片独立控制 -->
+              <view v-if="isImageLoading(item.id)" class="image-skeleton">
+                <up-skeleton
+                    rows="1"
+                    :rowsWidth="['100%']"
+                    :rowsHeight="['380rpx']"
+                    :title="false"
+                    :loading="true"
+                ></up-skeleton>
+              </view>
 
-            <!-- 实际图片内容 -->
-            <image
-                mode="aspectFill"
-                lazyLoad="true"
-                v-if="!loading"
-                :src="item.image"
-                :index="index"
-                class="goods-image"
-                @load="onImageLoad"
-            ></image>
+              <!-- 商品图片 - 异步加载 -->
+              <image
+                  mode="aspectFill"
+                  :lazy-load="true"
+                  :src="item.image"
+                  class="goods-image"
+                  :class="{ 'image-loaded': !isImageLoading(item.id) }"
+                  @load="onImageLoad(item.id)"
+                  @error="onImageError(item.id)"
+              ></image>
+            </view>
 
-
-            <!--            <up-lazy-load-->
-            <!--                v-if="!loading"-->
-            <!--                threshold=""-->
-            <!--                border-radius="24"-->
-            <!--                :image="item.image"-->
-            <!--                :index="index"-->
-            <!--                class="goods-image"-->
-            <!--            >-->
-
-
-            <!--            </up-lazy-load>-->
-
-
+            <!-- 商品信息 -->
             <view class="goods-info">
-              <up-skeleton
-                  rows="3"
-                  title
-                  :loading="loading"
-              >
-                <!-- 商品名称 -->
+              <view class="goods-name">{{ item.name }}</view>
+              <view class="goods-desc">{{ item.desc }}</view>
 
-                <view class="goods-name">{{ item.name }}</view>
-
-                <!-- 商品描述 -->
-                <view class="goods-desc">{{ item.desc }}</view>
-
-                <!-- 价格和销量 -->
-                <view class="goods-footer">
-                  <view class="goods-footer-info">
-                    <view class="goods-price">¥{{ item.price }}</view>
-                    <view class="goods-sales-count">已售{{ item.sales }}</view>
-                  </view>
-                  <view class="btn-add_cart" @click.stop="addCart">
-                    <up-icon name="plus" color="#ff4d4f" size="12"></up-icon>
-                  </view>
+              <view class="goods-footer">
+                <view class="goods-footer-info">
+                  <view class="goods-price">¥{{ item.price }}</view>
+                  <view class="goods-sales-count">已售{{ item.sales }}</view>
                 </view>
+                <view
+                    class="btn-add_cart"
+                    @click.stop="addCart(item.id)"
+                    @touchstart.stop
+                    @touchend.stop
+                    @touchcancel.stop
+                >
+                  <up-icon name="plus" color="#ff4d4f" size="12"></up-icon>
+                </view>
+              </view>
 
-                <!-- 标签 -->
-                <view class="goods-tag" v-if="item.tag">{{ item.tag }}</view>
+              <view class="goods-tag" v-if="item.tag">{{ item.tag }}</view>
+              <view class="goods-shop">{{ item.shop }}</view>
 
-                <!-- 店铺名称 -->
-                <view class="goods-shop">{{ item.shop }}</view>
-
-
-                <!-- 删除按钮 (仅收藏分类显示) -->
-                <up-icon
-                    v-if="tagsActiveIndex === 3"
-                    name="close-circle-fill"
-                    color="#fa3534"
-                    size="34"
-                    class="u-close"
-                    @click.stop="remove(item.id)"
-                />
-              </up-skeleton>
+              <up-icon
+                  v-if="tagsActiveIndex === 3"
+                  name="close-circle-fill"
+                  color="#fa3534"
+                  size="34"
+                  class="u-close"
+                  @click.stop="remove(item.id)"
+                  @touchstart.stop
+                  @touchend.stop
+                  @touchcancel.stop
+              />
             </view>
           </view>
-
-
         </template>
       </up-waterfall>
 
@@ -397,20 +360,10 @@ const goToDetail = (item) => {
 </template>
 
 <style scoped lang="scss">
-
-// 调整瀑布流组件商品列之间的间距
 :deep(.u-column) {
-
   &:not(:first-child) {
     margin-left: 16rpx;
   }
-}
-
-
-.u-scroll-list {
-  padding: 0;
-  margin: 0;
-
 }
 
 .page-container {
@@ -425,10 +378,6 @@ const goToDetail = (item) => {
   z-index: 10;
   background-color: transparent;
 
-  .tab-item:last-child {
-    margin-right: 16rpx;
-  }
-
   .tab-item {
     display: inline-block;
     padding: 16rpx 32rpx;
@@ -440,8 +389,11 @@ const goToDetail = (item) => {
     transition: all 0.3s;
     margin: 0 0 16rpx 16rpx;
 
+    &:last-child {
+      margin-right: 16rpx;
+    }
+
     &.active {
-      //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #f30909;
       font-weight: bold;
       box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
@@ -468,7 +420,6 @@ const goToDetail = (item) => {
     align-items: center;
     height: 320rpx;
     border-radius: 24rpx;
-    //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
     .title {
       font-family: 'YouSheBiaoTiHei';
@@ -495,13 +446,8 @@ const goToDetail = (item) => {
     align-items: start;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
-
-    .title {
+    .title, .tips {
       margin-left: 32rpx;
-    }
-
-    .tips {
-      margin-left: 16rpx;
     }
 
     .sales-list {
@@ -519,13 +465,6 @@ const goToDetail = (item) => {
       justify-content: center;
       align-items: center;
     }
-
-    .sales-price {
-      font-size: 28rpx;
-      font-weight: bold;
-      color: rgb(246, 60, 60);
-    }
-
   }
 
   .goods-service-1 {
@@ -537,21 +476,10 @@ const goToDetail = (item) => {
     .goods-hot {
       flex: 1;
       margin-bottom: 0;
-    }
-
-    .goods-new {
-      //background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      background-color: $card-base-bg;
-    }
-
-    .goods-hot {
-      //background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      background-color: $card-base-bg;
-
+      background-color: #fff;
     }
   }
 }
-
 
 .goods-item {
   position: relative;
@@ -559,18 +487,40 @@ const goToDetail = (item) => {
   border-radius: 32rpx;
   overflow: hidden;
   margin-bottom: 16rpx;
-  //box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
   transition: transform 0.3s;
 
-  &:active {
+  &.goods-item-active {
     transform: scale(0.98);
   }
 
-  .goods-image {
+  .goods-image-wrapper {
+    position: relative;
     width: 100%;
     height: 380rpx;
-    object-fit: cover;
+    background-color: #f5f5f5;
     border-radius: 24rpx;
+    overflow: hidden;
+
+    .image-skeleton {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    .goods-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      &.image-loaded {
+        opacity: 1;
+      }
+    }
   }
 
   .goods-info {
@@ -619,16 +569,16 @@ const goToDetail = (item) => {
       }
     }
 
-    //.goods-item-active {
-    //  transform: scale(0.98);
-    //}
-
-
     .btn-add_cart {
       background-color: rgba(255, 77, 79, 0.3);
       padding: 8rpx;
       border-radius: 50%;
+      transition: transform 0.2s, background-color 0.2s;
 
+      &:active {
+        transform: scale(0.9);
+        background-color: rgba(255, 77, 79, 0.5);
+      }
     }
   }
 
