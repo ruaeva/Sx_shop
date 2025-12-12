@@ -1,6 +1,18 @@
-# my-vue3-project
+# 一个基于Uniapp的B2B生鲜商城 
 
 一个基于 Vue 3 的项目，使用了 uni-app 框架。
+
+```shell
+
+如果对您有帮助，您可以点右上角 “Star” 收藏一下 ，获取第一时间更新，谢谢！
+
+```
+## 项目基础信息
+
+- **项目类型：** 实习阶段前端练习项目（仅客户端）
+- **技术栈：** Uniapp vite uViewPlus Sass
+- **适配平台：** H5、微信小程序、App（IOS/Android）
+
 
 ## 项目结构
 
