@@ -14,14 +14,13 @@
 
     <!-- 内容区域 -->
     <view class="page-content">
-
       <CategoryPanel />
     </view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {ref} from 'vue'
 import TopCategoryBar from './components/TopCategoryBar.vue'
 import CategoryPanel from "./components/CategoryPanel.vue";
 
@@ -40,7 +39,7 @@ const handleCategoryChange = (category) => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f5f5f5;
   overflow: hidden;
 }

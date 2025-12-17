@@ -10,7 +10,7 @@ defineOptions({
   }
 })
 
-const isUnmounted = ref(false);
+const isUnmounted = ref(false); // 用于判断页面是否卸载
 
 onLoad(() => {
   // 初始化时不需要全局loading
@@ -27,10 +27,10 @@ const goodsList = ref([]);
 const page = ref(1);
 const pageSize = ref(8);
 const hasMore = ref(true);
-
-// 图片加载状态Map
+// 图片加载状态Map (key: 商品id, value: loading状态)
 const imageLoadingMap = ref(new Map());
-// 卡片激活状态Map
+
+// 卡片激活状态Map (key: 商品id, value: active状态)
 const itemActiveMap = ref(new Map());
 
 // 分类映射
@@ -96,8 +96,11 @@ const generateMockGoods = (category, count) => {
       stock: Math.floor(Math.random() * 1000) + 100
     });
 
-    // 初始化图片加载状态
-    imageLoadingMap.value.set(itemId, true);
+    // 初始化图片加载状态为true(显示骨架屏)
+    setTimeout(() => {
+      imageLoadingMap.value.set(itemId, false);
+    }, 500);
+
   }
   return goods;
 };
@@ -195,6 +198,8 @@ const loadGoodsList = async (isRefresh = false) => {
     console.error('加载商品列表失败:', error);
   }
 };
+
+
 
 const addCart = (id) => {
   console.log('添加到购物车:', id);
@@ -316,13 +321,7 @@ const goToDetail = (item) => {
                   <view class="goods-price">¥{{ item.price }}</view>
                   <view class="goods-sales-count">已售{{ item.sales }}</view>
                 </view>
-                <view
-                    class="btn-add_cart"
-                    @click.stop="addCart(item.id)"
-                    @touchstart.stop
-                    @touchend.stop
-                    @touchcancel.stop
-                >
+                <view class="btn-add_cart" @click.stop="addCart(item.id)">
                   <up-icon name="plus" color="#ff4d4f" size="12"></up-icon>
                 </view>
               </view>
@@ -337,9 +336,6 @@ const goToDetail = (item) => {
                   size="34"
                   class="u-close"
                   @click.stop="remove(item.id)"
-                  @touchstart.stop
-                  @touchend.stop
-                  @touchcancel.stop
               />
             </view>
           </view>
@@ -573,12 +569,6 @@ const goToDetail = (item) => {
       background-color: rgba(255, 77, 79, 0.3);
       padding: 8rpx;
       border-radius: 50%;
-      transition: transform 0.2s, background-color 0.2s;
-
-      &:active {
-        transform: scale(0.9);
-        background-color: rgba(255, 77, 79, 0.5);
-      }
     }
   }
 

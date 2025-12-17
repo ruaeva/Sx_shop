@@ -2,7 +2,9 @@
 
 一个基于 Vue 3 的项目，使用了 uni-app 框架。
 
-实习练手的小项目，基于 uni-app 框架，使用 Vue 3 + TS + uView-Plus开发，使用 Pinia 状态管理，使用 Vite 构建。（仅完成客户端UI部分，后端部分需自行完善）
+实习练手的小项目，基于 uni-app 框架，使用 Vue 3 + TS + uView-Plus开发，使用 Pinia 状态管理，使用 Vite 构建。
+
+（仅完成客户端UI部分，后端部分需自行完善）
 
 - **适配平台：** H5、微信小程序、App（IOS/Android）
 

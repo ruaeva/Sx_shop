@@ -52,7 +52,6 @@
       "path": "pages/category/category",
       "style": {
         "navigationBarTitleText": "分类",
-
         "enablePullDownRefresh": false
       }
     },
@@ -81,6 +80,13 @@
       "path": "pages/wallet/wallet",
       "style": {
         "navigationBarTitleText": "我的钱包",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/test/test",
+      "style": {
+        "navigationBarTitleText": "test",
         "enablePullDownRefresh": false
       }
     }
@@ -129,6 +135,11 @@
         "text": "我的",
         "iconPath": "static/icon/user/User.png",
         "selectedIconPath": "static/icon/user/User_active.png"
+      },
+      {
+        "pagePath": "pages/test/test",
+        "text": "test"
+
       }
     ]
   }
