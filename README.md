@@ -4,7 +4,11 @@
 
 实习练手的小项目，基于 uni-app 框架，使用 Vue 3 + TS + uView-Plus开发，使用 Pinia 状态管理，使用 Vite 构建。
 
+<<<<<<< HEAD
 （仅完成客户端UI部分，后端部分需自行完善）
+=======
+> 仅完成客户端UI部分，后端部分需自行完善
+>>>>>>> 9ad49972a88748346f58f55d78c1ce7c900eb4a0
 
 - **适配平台：** H5、微信小程序、App（IOS/Android）
 
@@ -51,7 +55,7 @@ src/
 
 ## 安装依赖
 
-node >= 20.0.0 好像18以下组件库依赖无法引入
+> **注意** node >= 20.0.0 以下组件库依赖可能引入不成功
 
 ```bash
 npm install
@@ -66,13 +70,13 @@ yarn install
 ## 开发运行
 
 ```bash
-npm run dev
+uni
 ```
 
 ## 构建
 
 ```bash
-npm run build
+uni build
 ```
 
 ## 项目功能
