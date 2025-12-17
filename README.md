@@ -1,4 +1,4 @@
-# 一个基于Uniapp的B2B生鲜商城 
+# 一个基于Uniapp的B2B生鲜商城
 
 一个基于 Vue 3 的项目，使用了 uni-app 框架。
 
@@ -8,7 +8,8 @@
 （仅完成客户端UI部分，后端部分需自行完善）
 =======
 > 仅完成客户端UI部分，后端部分需自行完善
->>>>>>> 9ad49972a88748346f58f55d78c1ce7c900eb4a0
+
+> > > > > >
 
 - **适配平台：** H5、微信小程序、App（IOS/Android）
 
@@ -39,6 +40,9 @@ src/
 ├── data/                   # 数据文件
 │   └── GoodsData.json
 ├── static/                 # 静态资源
+├── utils/                  # 工具函数
+├── api/                    # 接口文件
+│   └──Product.ts       
 └── store/                  # 状态管理
     └── cartStore.ts
 ```
