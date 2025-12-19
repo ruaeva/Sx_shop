@@ -31,3 +31,5 @@ uni_modules/
 *.iws
 *.iml
 *.ipr
+
+*.env

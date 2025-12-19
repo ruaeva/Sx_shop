@@ -130,12 +130,12 @@
         "iconPath": "static/icon/order/order.png",
         "selectedIconPath": "static/icon/order/order_active.png"
       },
-      {
-        "pagePath": "pages/user/user",
-        "text": "我的",
-        "iconPath": "static/icon/user/User.png",
-        "selectedIconPath": "static/icon/user/User_active.png"
-      },
+//      {
+//        "pagePath": "pages/user/user",
+//        "text": "我的",
+//        "iconPath": "static/icon/user/User.png",
+//        "selectedIconPath": "static/icon/user/User_active.png"
+//      },
       {
         "pagePath": "pages/test/test",
         "text": "test"
